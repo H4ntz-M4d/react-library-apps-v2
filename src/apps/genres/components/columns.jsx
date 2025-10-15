@@ -2,7 +2,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../../../components/ui/button";
 import { DialogForm } from "./DialogForm";
 
-export const genreColumns = (page = 1, limit = 5) => [
+export const genreColumns = ({
+  page = 1,
+  limit = 10,
+  setOpen,
+  onEdit,
+  setFormData,
+  setId,
+  onRequestDelete,
+}) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,12 +54,28 @@ export const genreColumns = (page = 1, limit = 5) => [
     cell: ({ row }) => {
       return (
         <div className="flex gap-2 justify-center">
-          <DialogForm>
-            <Button variant="warning" size="sm">
-              Edit
-            </Button>
-          </DialogForm>
-          <Button variant="destructive" size="sm">
+          <Button
+            variant="warning"
+            size="sm"
+            click={() => {
+              setOpen(true),
+                onEdit(true),
+                setId(row.original.id_genre),
+                setFormData({
+                  kd_genre: row.original.kd_genre,
+                  name_genre: row.original.name_genre,
+                });
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            click={() => {
+              onRequestDelete(row.original.id_genre);
+            }}
+          >
             Delete
           </Button>
         </div>

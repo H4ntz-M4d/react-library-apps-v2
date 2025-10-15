@@ -3,31 +3,120 @@ import { DataTable } from "../components/DataTable";
 import { genreColumns } from "../components/columns";
 import { useMutationGenre } from "../hooks/useMutationGenre";
 import { useImmer } from "use-immer";
+import { useState } from "react";
+import { DialogForm } from "../components/DialogForm";
+import { AlertGenre } from "../components/AlertGenre";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function GenreContent() {
   const { genre, pagination, fetchGenre } = useGenresContext();
-  const { add, loading } = useMutationGenre();
+  const { add, edit, removed, loading, error, validationErrors, setValidationErrors } = useMutationGenre();
   const [formData, setFormData] = useImmer({
     kd_genre: "",
-    name_genre: ""
-  })
+    name_genre: "",
+  });
+  const [isEdit, setEdit] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [id, setId] = useState([]);
+  const [alertConfig, setAlertConfig] = useState(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const onRequestSave = (isEdit, formData, idForEdit) => {
+    openConfirm({
+      title: isEdit ? "Simpan perubahan?" : "Simpan data baru?",
+      desc: "Pastikan data sudah benar sebelum disimpan.",
+      actionLabel: "Simpan",
+      cancelLabel: "Batal",
+      variant: "confirm",
+      onConfirm: async () => {
+        try {
+          if (isEdit) {
+            const res = await edit(idForEdit, formData);
+            if (res?.success) {
+              setOpen(false);
+              setFormData({
+                kd_genre: "",
+                name_genre: "",
+              });
+
+              toast.success(
+                isEdit
+                  ? "Berhasil Mengupdate Data"
+                  : "Berhasil Menambahkan Data"
+              );
+            }
+            return res;
+          } else {
+            const res = await add(formData);
+            if (res?.success) {
+              setOpen(false);
+              setFormData({
+                kd_genre: "",
+                name_genre: "",
+              });
+
+              toast.success(
+                isEdit
+                  ? "Berhasil Mengupdate Data"
+                  : "Berhasil Menambahkan Data"
+              );
+            }
+            return res;
+          }
+        } catch (err) {
+          toast.error(err.message)
+        }
+        // tutup form dialog dan reset form setelah berhasil
+      },
+    });
+  };
 
   const handleAddOrUpdate = async (e) => {
     e.preventDefault();
-    loading
-    try {
-      const res = await add(formData)
-      if (res?.success) {
-        setFormData({
-          kd_genre: "",
-          name_genre: ""
-        })
-      }
-      return res;
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    onRequestSave(isEdit, formData, id);
+  };
+
+  const onRequestDelete = (id) => {
+    openConfirm({
+      title: "Apakah anda yakin ingin menghapus data ini?",
+      desc: "Jika anda setuju, data akan dihapus dari penyimpanan dan tidak bisa digunakan lagi.",
+      actionLabel: "Hapus",
+      cancelLabel: "Batal",
+      variant: "destructive",
+      onConfirm: async () => {
+        await removed(id);
+        toast("Event has been created.");
+      },
+    });
+  };
+
+  const openConfirm = (config) => {
+    // default
+    const defaults = {
+      title: "Konfirmasi",
+      desc: "Apakah Anda yakin?",
+      actionLabel: "Lanjut",
+      cancelLabel: "Batal",
+      variant: "confirm",
+      onConfirm: null,
+    };
+    setAlertConfig({ ...defaults, ...config });
+    setOpenAlert(true);
+  };
+
+  const openError = (message) => {
+    setAlertConfig({
+      title: "Terjadi kesalahan",
+      desc: message ?? "Gagal memproses permintaan.",
+      actionLabel: "OK",
+      cancelLabel: null, // tidak tampilkan tombol cancel
+      variant: "error",
+      onConfirm: () => setOpenAlert(false),
+    });
+    setOpenAlert(true);
+  };
 
   return (
     <>
@@ -39,11 +128,21 @@ export default function GenreContent() {
 
         {genre.length > 0 ? (
           <DataTable
-            columns={genreColumns(pagination.page, pagination.limit)}
+            columns={genreColumns({
+              page: pagination.page,
+              limit: pagination.limit,
+              setOpen: setOpen,
+              onEdit: setEdit,
+              setId,
+              setFormData,
+              onRequestDelete,
+            })}
             data={genre}
             onCreate={handleAddOrUpdate}
             setFormData={setFormData}
             formData={formData}
+            setOpen={setOpen}
+            onEdit={setEdit}
           />
         ) : (
           <div className="text-center py-8">
@@ -59,6 +158,47 @@ export default function GenreContent() {
           </div>
         )}
       </div>
+
+      {alertConfig && (
+        <AlertGenre
+          title={alertConfig.title}
+          desc={alertConfig.desc}
+          actionLabel={alertConfig.actionLabel}
+          cancelLabel={alertConfig.cancelLabel}
+          openAlert={openAlert}
+          setOpenAlert={setOpenAlert}
+          isLoading={confirmLoading}
+          onCancel={() => setOpenAlert(false)}
+          onConfirm={async () => {
+            if (!alertConfig.onConfirm) return setOpenAlert(false);
+            try {
+              setConfirmLoading(true);
+              await alertConfig.onConfirm(); // jalankan aksi yang dikonfirmasi
+              setOpenAlert(false);
+            } catch (err) {
+              // Jika aksi gagal, tampilkan error alert
+              setOpenAlert(false);
+              openError(err?.message || "Operasi gagal dijalankan.");
+            } finally {
+              setConfirmLoading(false);
+            }
+          }}
+          variant={alertConfig.variant}
+        />
+      )}
+
+      <Toaster />
+
+      <DialogForm
+        create={handleAddOrUpdate}
+        setFormData={setFormData}
+        formData={formData}
+        open={open}
+        setOpen={setOpen}
+        isEdit={isEdit}
+        error={validationErrors}
+        setError={setValidationErrors}
+      />
     </>
   );
 }

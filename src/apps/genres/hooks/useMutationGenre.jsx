@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useGenresContext } from "../context/GenreContext";
 import { create, remove, update } from "@/services/api.genre";
-import { data } from "react-router";
 
 export const useMutationGenre = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState(null);
   const { fetchGenre } = useGenresContext();
 
   const add = async (data) => {
@@ -18,8 +18,10 @@ export const useMutationGenre = () => {
         fetchGenre && fetchGenre();
       }
       return res;
-    } catch (error) {
-      setError("Terjadi error:", error);
+    } catch (err) {
+      setError(err.message);
+      setValidationErrors(err.validationErrors);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -35,8 +37,9 @@ export const useMutationGenre = () => {
         fetchGenre && fetchGenre();
       }
       return res;
-    } catch (error) {
-      setError("Terjadi kesalahan:", error);
+    } catch (err) {
+      setError(err.message);
+      setValidationErrors(err.validationErrors);
     } finally {
       setLoading(false);
     }
@@ -52,12 +55,13 @@ export const useMutationGenre = () => {
         fetchGenre && fetchGenre();
       }
       return res;
-    } catch (error) {
-      setError("Terjadi kesalahan:", error);
+    } catch (err) {
+      setError(err.message);
+      setValidationErrors(err.validationErrors);
     } finally {
       setLoading(false);
     }
   };
 
-  return { add, edit, removed, loading, error };
+  return { add, edit, removed, loading, error, validationErrors, setValidationErrors };
 };

@@ -5,7 +5,7 @@ export const useGenres = () => {
   const [genre, setGenre] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 5,
+    limit: 10,
     totalPage: 1,
     total: 0,
   });

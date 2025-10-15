@@ -18,7 +18,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { DialogForm } from "./DialogForm";
 
-export function DataTable({ columns, data, onCreate, setFormData, formData }) {
+export function DataTable({ columns, data, setOpen, onEdit }) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
   const table = useReactTable({
@@ -45,11 +45,9 @@ export function DataTable({ columns, data, onCreate, setFormData, formData }) {
           }
           className="max-w-sm"
         />
-        <DialogForm create={onCreate} setFormData={setFormData} formData={formData}>
-          <Button className={"my-3"} variant={"primary"}>
-            Add Genre
-          </Button>
-        </DialogForm>
+        <Button className={"my-3"} variant={"primary"} click={() => {setOpen(true), onEdit(false)}}>
+          Add Genre
+        </Button>
       </div>
       <Table>
         <TableHeader>
