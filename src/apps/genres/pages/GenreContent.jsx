@@ -8,10 +8,19 @@ import { DialogForm } from "../components/DialogForm";
 import { AlertGenre } from "../components/AlertGenre";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { useSearchParams } from "react-router";
 
 export default function GenreContent() {
   const { genre, pagination, fetchGenre } = useGenresContext();
-  const { add, edit, removed, loading, error, validationErrors, setValidationErrors } = useMutationGenre();
+  const {
+    add,
+    edit,
+    removed,
+    loading,
+    error,
+    validationErrors,
+    setValidationErrors,
+  } = useMutationGenre();
   const [formData, setFormData] = useImmer({
     kd_genre: "",
     name_genre: "",
@@ -22,6 +31,7 @@ export default function GenreContent() {
   const [id, setId] = useState([]);
   const [alertConfig, setAlertConfig] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const onRequestSave = (isEdit, formData, idForEdit) => {
     openConfirm({
@@ -66,7 +76,7 @@ export default function GenreContent() {
             return res;
           }
         } catch (err) {
-          toast.error(err.message)
+          toast.error(err.message);
         }
         // tutup form dialog dan reset form setelah berhasil
       },
@@ -118,6 +128,27 @@ export default function GenreContent() {
     setOpenAlert(true);
   };
 
+  const pageFromUrl = Number(searchParams.get('page') || 1);
+  const limitFromUrl = Number(searchParams.get('limit') || 10);
+
+  const pageIndex = (pageFromUrl ?? 1) - 1;
+  const pageSize = limitFromUrl ?? 10;
+  const pageCount = pagination.totalPages;
+
+  const handlePaginationChange = (updater) => {
+    const next =
+      typeof updater === "function"
+        ? updater({ pageIndex, pageSize })
+        : updater;
+
+    // react-table 0-based → API 1-based
+    const nextPage = (next.pageIndex ?? pageIndex) + 1;
+    const nextLimit = next.pageSize ?? pageSize;
+    setSearchParams({ page: String(nextPage), limit: String(nextLimit) })
+
+    fetchGenre(nextPage, nextLimit);
+  };
+
   return (
     <>
       <div className="p-6">
@@ -143,6 +174,10 @@ export default function GenreContent() {
             formData={formData}
             setOpen={setOpen}
             onEdit={setEdit}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+            pageCount={pageCount}
+            onPaginationChange={handlePaginationChange}
           />
         ) : (
           <div className="text-center py-8">

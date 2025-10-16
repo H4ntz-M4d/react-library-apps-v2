@@ -45,6 +45,7 @@ function Button({
   size,
   click,
   type,
+  disabled,
   asChild = false,
   ...props
 }) {
@@ -55,6 +56,7 @@ function Button({
       data-slot="button"
       type={type}
       onClick={click}
+      disabled={disabled}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props} />
   );
