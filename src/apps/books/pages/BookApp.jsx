@@ -1,5 +1,5 @@
 import { BookProvider } from "../context/BooksContext";
-import { BookContent } from "./BookContent";
+import { BookContent } from "../views/BookContent";
 
 export const BookApp = () => {
   return (
