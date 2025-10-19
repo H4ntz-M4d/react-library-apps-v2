@@ -18,13 +18,23 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/pagination";
-import { getPageWindow } from "@/helper/getPageWindow";
+import { getPageWindow } from "@/helpers/getPageWindow";
 
-export function DataTable({ columns, data, setOpen, onEdit, pageIndex, pageSize, pageCount, onPaginationChange }) {
+export function DataTable({
+  columns,
+  data,
+  setOpen,
+  onEdit,
+  pageIndex,
+  pageSize,
+  pageCount,
+  onPaginationChange,
+  onRequestDeleteSelected,
+}) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
-  const pages = getPageWindow(pageIndex, pageCount, 5); 
-  
+  const pages = getPageWindow(pageIndex, pageCount, 5);
+
   const table = useReactTable({
     data,
     columns,
@@ -39,11 +49,16 @@ export function DataTable({ columns, data, setOpen, onEdit, pageIndex, pageSize,
       rowSelection,
       columnFilters,
       pagination: {
-        pageIndex, pageSize
+        pageIndex,
+        pageSize,
       },
     },
-    onPaginationChange
+    onPaginationChange,
   });
+
+  const selected_genre_id = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original.id_genre);
 
   return (
     <div>
@@ -57,9 +72,26 @@ export function DataTable({ columns, data, setOpen, onEdit, pageIndex, pageSize,
             }
             className="max-w-sm"
           />
-          <Button className={"my-3"} variant={"primary"} click={() => {setOpen(true), onEdit(false)}}>
-            Add Genre
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              className={"my-3"}
+              variant={"primary"}
+              click={() => {
+                setOpen(true), onEdit(false);
+              }}
+            >
+              Add Genre
+            </Button>
+            {selected_genre_id.length > 0 && (
+              <Button
+                className={"my-3"}
+                variant={"destructive"}
+                click={() => onRequestDeleteSelected(selected_genre_id)}
+              >
+                Delete Selected
+              </Button>
+            )}
+          </div>
         </div>
         <Table>
           <TableHeader>
@@ -90,14 +122,20 @@ export function DataTable({ columns, data, setOpen, onEdit, pageIndex, pageSize,
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 // src/apps/genres/components/AlertGenre.jsx
-export const AlertGenre = ({
+export const AlertComponents = ({
   title,
   desc,
   openAlert,

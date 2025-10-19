@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useGenresContext } from "../context/GenreContext";
-import { create, remove, update } from "@/services/api.genre";
+import { create, remove, removeSelected, update } from "@/services/api.genre";
 
 export const useMutationGenre = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState(null);
-  const { fetchGenre } = useGenresContext();
+  const { fetchGenre, pagination } = useGenresContext();
 
   const add = async (data) => {
     setLoading(true);
@@ -15,7 +15,7 @@ export const useMutationGenre = () => {
     try {
       const res = await create(data);
       if (res?.success == true) {
-        fetchGenre && fetchGenre();
+        fetchGenre && fetchGenre(pagination.page, pagination.limit);
       }
       return res;
     } catch (err) {
@@ -34,7 +34,7 @@ export const useMutationGenre = () => {
     try {
       const res = await update(id_genre, data);
       if (res?.success == true) {
-        fetchGenre && fetchGenre();
+        fetchGenre && fetchGenre(pagination.page, pagination.limit);
       }
       return res;
     } catch (err) {
@@ -52,6 +52,24 @@ export const useMutationGenre = () => {
     try {
       const res = await remove(id_genre);
       if (res?.success == true) {
+        fetchGenre && fetchGenre(pagination.page, pagination.limit);
+      }
+      return res;
+    } catch (err) {
+      setError(err.message);
+      setValidationErrors(err.validationErrors);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const removedSelected = async (id_genre_Selected) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await removeSelected(id_genre_Selected);
+      if (res?.success == true) {
         fetchGenre && fetchGenre();
       }
       return res;
@@ -63,5 +81,5 @@ export const useMutationGenre = () => {
     }
   };
 
-  return { add, edit, removed, loading, error, validationErrors, setValidationErrors };
+  return { add, edit, removed, loading, error, validationErrors, setValidationErrors, removedSelected };
 };

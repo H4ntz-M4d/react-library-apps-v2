@@ -4,9 +4,9 @@ import { DataTableBook } from "../components/DataTable";
 import { useBooksContext } from "../context/BooksContext";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Confirmation } from "../helpers/confirmation";
+import { Confirmation } from "../../../helpers/confirmation";
 import { useState } from "react";
-import { AlertGenre } from "@/apps/genres/components/AlertGenre";
+import { AlertComponents } from "@/components/global/AlertComponents";
 import { useMutationBook } from "../hooks/useMutationBook";
 
 export const BookContent = () => {
@@ -27,6 +27,8 @@ export const BookContent = () => {
   const pageSize = limitFromUrl ?? 10;
   const pageCount = pagination.totalPages;
 
+  /* ---------------------------------------------- Section Function ⬇️ ---------------------------------------------- */
+
   const handlePaginationChange = (updater) => {
     const next =
       typeof updater === "function"
@@ -39,6 +41,8 @@ export const BookContent = () => {
 
     fetchBook(nextPage, nextLimit);
   };
+
+  /* ---------------------------------------------- Section View ⬇️ ---------------------------------------------- */
 
   const handleRemoveSelected = (data) => {
     if (data.length === 0) return;
@@ -108,7 +112,7 @@ export const BookContent = () => {
       <Toaster />
 
       {alertConfig && (
-        <AlertGenre
+        <AlertComponents
           title={alertConfig.title}
           desc={alertConfig.desc}
           actionLabel={alertConfig.actionLabel}

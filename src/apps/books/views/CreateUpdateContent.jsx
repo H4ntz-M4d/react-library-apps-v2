@@ -22,8 +22,8 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useMutationBook } from "../hooks/useMutationBook";
 import { useEffect, useState } from "react";
-import { AlertGenre } from "@/apps/genres/components/AlertGenre";
-import { Confirmation } from "../helpers/confirmation";
+import { AlertComponents } from "@/components/global/AlertComponents";
+import { Confirmation } from "../../../helpers/confirmation";
 import { genreHelpers } from "../helpers/genreHelpers";
 
 export const CreateUpdateContent = () => {
@@ -34,6 +34,8 @@ export const CreateUpdateContent = () => {
   const [alertConfig, setAlertConfig] = useState(null);
   const { addGenre, updateGenreAt, removeGenreAt } = genreHelpers(setFormData);
   const { openConfirm, openError } = Confirmation({setAlertConfig, setOpenAlert});
+
+  /* ---------------------------------------------- Section Function ⬇️ ---------------------------------------------- */
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -103,6 +105,8 @@ export const CreateUpdateContent = () => {
     handleSubmit();
   };
 
+  /* ---------------------------------------------- Section View ⬇️ ---------------------------------------------- */
+  
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Create Book</h1>
@@ -240,7 +244,7 @@ export const CreateUpdateContent = () => {
       <Toaster />
 
       {alertConfig && (
-        <AlertGenre
+        <AlertComponents
           title={alertConfig.title}
           desc={alertConfig.desc}
           actionLabel={alertConfig.actionLabel}

@@ -4,7 +4,7 @@ import { create, getById, remove, removeSelected, update } from "@/services/api.
 import { useImmer } from "use-immer";
 
 export const useMutationBook = () => {
-  const { fetchBook } = useBooksContext();
+  const { fetchBook, pagination } = useBooksContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [validationError, setValidationError] = useState(null);
@@ -25,7 +25,7 @@ export const useMutationBook = () => {
     try {
       const res = await create(data);
       if (res?.success == true) {
-        fetchBook && fetchBook();
+        fetchBook && fetchBook(pagination.page, pagination.limit);
       }
       return res;
       
@@ -76,7 +76,7 @@ export const useMutationBook = () => {
     try {
       const res = await update(id_buku, data);
       if (res?.success) {
-        fetchBook && fetchBook();
+        fetchBook && fetchBook(pagination.page, pagination.limit);
       }
       return res;
     } catch (err) {
@@ -96,7 +96,7 @@ export const useMutationBook = () => {
     try {
       const res = await remove(id_buku);
       if (res?.success) {
-        fetchBook && fetchBook();
+        fetchBook && fetchBook(pagination.page, pagination.limit);
       }
       return res;
     } catch (err) {
@@ -116,7 +116,7 @@ export const useMutationBook = () => {
     try {
       const res = await removeSelected(data);
       if (res?.success) {
-        fetchBook && fetchBook();
+        fetchBook && fetchBook(pagination.page, pagination.limit);
       }
       return res;
     } catch (err) {

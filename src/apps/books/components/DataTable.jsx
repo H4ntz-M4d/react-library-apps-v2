@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/pagination";
-import { getPageWindow } from "@/helper/getPageWindow";
+import { getPageWindow } from "@/helpers/getPageWindow";
 import { Button } from "@/components/ui/button";
 
 export const DataTableBook = ({

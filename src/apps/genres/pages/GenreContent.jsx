@@ -5,10 +5,11 @@ import { useMutationGenre } from "../hooks/useMutationGenre";
 import { useImmer } from "use-immer";
 import { useState } from "react";
 import { DialogForm } from "../components/DialogForm";
-import { AlertGenre } from "../components/AlertGenre";
+import { AlertComponents } from "../../../components/global/AlertComponents";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useSearchParams } from "react-router";
+import { Confirmation } from "@/helpers/confirmation";
 
 export default function GenreContent() {
   const { genre, pagination, fetchGenre } = useGenresContext();
@@ -16,6 +17,7 @@ export default function GenreContent() {
     add,
     edit,
     removed,
+    removedSelected,
     loading,
     error,
     validationErrors,
@@ -32,6 +34,16 @@ export default function GenreContent() {
   const [alertConfig, setAlertConfig] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { openConfirm, openError } = Confirmation({setAlertConfig, setOpenAlert});
+
+  const pageFromUrl = Number(searchParams.get('page') || 1);
+  const limitFromUrl = Number(searchParams.get('limit') || 10);
+
+  const pageIndex = (pageFromUrl ?? 1) - 1;
+  const pageSize = limitFromUrl ?? 10;
+  const pageCount = pagination.totalPages;
+
+  /* ---------------------------------------------- Section Function ⬇️ ---------------------------------------------- */
 
   const onRequestSave = (isEdit, formData, idForEdit) => {
     openConfirm({
@@ -97,43 +109,24 @@ export default function GenreContent() {
       variant: "destructive",
       onConfirm: async () => {
         await removed(id);
-        toast("Event has been created.");
+        toast("Data telah berhasil dihapus.");
       },
     });
   };
 
-  const openConfirm = (config) => {
-    // default
-    const defaults = {
-      title: "Konfirmasi",
-      desc: "Apakah Anda yakin?",
-      actionLabel: "Lanjut",
+  const onRequestDeleteSelected = (id_genre_Selected) => {
+    openConfirm({
+      title: "Apakah anda yakin ingin menghapus data ini?",
+      desc: "Jika anda setuju, data akan dihapus dari penyimpanan dan tidak bisa digunakan lagi.",
+      actionLabel: "Hapus",
       cancelLabel: "Batal",
-      variant: "confirm",
-      onConfirm: null,
-    };
-    setAlertConfig({ ...defaults, ...config });
-    setOpenAlert(true);
-  };
-
-  const openError = (message) => {
-    setAlertConfig({
-      title: "Terjadi kesalahan",
-      desc: message ?? "Gagal memproses permintaan.",
-      actionLabel: "OK",
-      cancelLabel: null, // tidak tampilkan tombol cancel
-      variant: "error",
-      onConfirm: () => setOpenAlert(false),
+      variant: "destructive",
+      onConfirm: async () => {
+        await removedSelected(id_genre_Selected);
+        toast("Data telah berhasil dihapus.");
+      },
     });
-    setOpenAlert(true);
   };
-
-  const pageFromUrl = Number(searchParams.get('page') || 1);
-  const limitFromUrl = Number(searchParams.get('limit') || 10);
-
-  const pageIndex = (pageFromUrl ?? 1) - 1;
-  const pageSize = limitFromUrl ?? 10;
-  const pageCount = pagination.totalPages;
 
   const handlePaginationChange = (updater) => {
     const next =
@@ -149,6 +142,8 @@ export default function GenreContent() {
     fetchGenre(nextPage, nextLimit);
   };
 
+  /* ---------------------------------------------- Section View ⬇️ ---------------------------------------------- */
+
   return (
     <>
       <div className="p-6">
@@ -157,34 +152,27 @@ export default function GenreContent() {
           Halaman ini menampilkan daftar genre buku yang tersedia.
         </p>
 
-        {genre.length > 0 ? (
-          <DataTable
-            columns={genreColumns({
-              page: pagination.page,
-              limit: pagination.limit,
-              setOpen: setOpen,
-              onEdit: setEdit,
-              setId,
-              setFormData,
-              onRequestDelete,
-            })}
-            data={genre}
-            setFormData={setFormData}
-            formData={formData}
-            setOpen={setOpen}
-            onEdit={setEdit}
-            pageIndex={pageIndex}
-            pageSize={pageSize}
-            pageCount={pageCount}
-            onPaginationChange={handlePaginationChange}
-          />
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              Tidak ada data genre yang tersedia.
-            </p>
-          </div>
-        )}
+        <DataTable
+          columns={genreColumns({
+            page: pagination.page,
+            limit: pagination.limit,
+            setOpen: setOpen,
+            onEdit: setEdit,
+            setId,
+            setFormData,
+            onRequestDelete,
+          })}
+          data={genre}
+          setFormData={setFormData}
+          formData={formData}
+          setOpen={setOpen}
+          onEdit={setEdit}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          pageCount={pageCount}
+          onPaginationChange={handlePaginationChange}
+          onRequestDeleteSelected={onRequestDeleteSelected}
+        />
 
         {pagination && (
           <div className="mt-4 text-sm text-muted-foreground">
@@ -194,7 +182,7 @@ export default function GenreContent() {
       </div>
 
       {alertConfig && (
-        <AlertGenre
+        <AlertComponents
           title={alertConfig.title}
           desc={alertConfig.desc}
           actionLabel={alertConfig.actionLabel}
