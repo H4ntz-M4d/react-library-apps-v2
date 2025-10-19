@@ -2,6 +2,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
@@ -15,22 +16,47 @@ import {
 } from "../../../components/ui/table";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { DataTablePagination } from "@/components/ui/pagination";
+import { getPageWindow } from "@/helper/getPageWindow";
+import { Button } from "@/components/ui/button";
 
-export const DataTableBook = ({ columns, data }) => {
+export const DataTableBook = ({
+  columns,
+  data,
+  pageIndex,
+  pageCount,
+  pageSize,
+  onPaginationChange,
+  onDeleteSelected 
+}) => {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
+  const pages = getPageWindow(pageIndex, pageCount, 5);
   const table = useReactTable({
     data,
     columns,
+    manualPagination: true,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    pageCount,
     state: {
       rowSelection,
       columnFilters,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
+    onPaginationChange,
   });
+
+  const selectedIds = table
+  .getSelectedRowModel()
+  .rows.map((row) => row.original.id_buku);
+
   return (
     <div>
       <div className="overflow-hidden rounded-md border md:text-end p-5">
@@ -43,6 +69,27 @@ export const DataTableBook = ({ columns, data }) => {
             }
             className="max-w-sm"
           />
+
+          <div className="flex gap-2">
+            <a href="/books/create-book">
+              <Button size="sm" type="button" variant="primary">
+                Create Book
+              </Button>
+            </a>
+
+            {selectedIds.length > 0 && (
+              <Button
+                size="sm"
+                type="button"
+                variant="destructive"
+                click={() =>
+                  onDeleteSelected(selectedIds)
+                }
+              >
+                Delete Selected
+              </Button>
+            )}
+          </div>
         </div>
         <Table>
           <TableHeader>
@@ -96,6 +143,7 @@ export const DataTableBook = ({ columns, data }) => {
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} pages={pages} />
     </div>
   );
 };

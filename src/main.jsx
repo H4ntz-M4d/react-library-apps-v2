@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.jsx";
 import GenreList from "./apps/genres/pages/GenreApp";
 import { BookApp } from "./apps/books/pages/BookApp";
+import { BookCreateUpdate } from "./apps/books/pages/BookCreateUpdate";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App />}>
           <Route path="/genre" element={<GenreList />} />
           <Route path="/books" element={<BookApp />} />
+          <Route path="/books/create-book" element={<BookCreateUpdate />} />
         </Route>
       </Routes>
     </BrowserRouter>

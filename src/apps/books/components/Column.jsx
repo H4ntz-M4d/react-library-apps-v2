@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useNavigate } from "react-router";
 
-export const BookColumns = () => [
+export const BookColumns = ({onRemoved}) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -30,7 +31,7 @@ export const BookColumns = () => [
   },
   {
     accessorKey: "nama_buku",
-    header: "Kode Buku",
+    header: "Nama Buku",
   },
   {
     accessorKey: "pengarang",
@@ -45,15 +46,43 @@ export const BookColumns = () => [
     header: "Tahun Terbit",
   },
   {
+    accessorKey: "buku_genre",
+    header: "Genre",
+    cell: ({ row }) => {
+      const genres = row.original.buku_genre;
+      if (!genres || !Array.isArray(genres)) return "-";
+
+      return (
+        <div className="flex flex-wrap gap-1">
+          {genres.map((item, index) => (
+            <span
+              key={index}
+              className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+            >
+              {item.genre?.name_genre || "-"}
+            </span>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const navigate = useNavigate();
       return (
         <div className="flex gap-2 justify-center">
-          <Button variant={"warning"} size={"sm"}>
+          <Button
+            variant={"warning"}
+            size={"sm"}
+            click={() => {
+              navigate(`/books/create-book?edit=${row.original.id_buku}`);
+            }}
+          >
             Edit
           </Button>
-          <Button variant={"warning"} size={"sm"}>
+          <Button variant={"destructive"} size={"sm"} click={() => onRemoved(row.original.id_buku)}>
             Delete
           </Button>
         </div>

@@ -169,7 +169,6 @@ export default function GenreContent() {
               onRequestDelete,
             })}
             data={genre}
-            onCreate={handleAddOrUpdate}
             setFormData={setFormData}
             formData={formData}
             setOpen={setOpen}
