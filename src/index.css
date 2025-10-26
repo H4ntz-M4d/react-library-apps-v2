@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -39,6 +40,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --font-main: "Nunito Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-main);
 }
 
 :root {
@@ -108,6 +114,55 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 90px;
+  height: 14px;
+  --c:#000 92%,#0000;
+  background: 
+    radial-gradient(circle 7px at bottom,var(--c)) 0 0,
+    radial-gradient(circle 7px at top   ,var(--c)) 0 100%;
+  background-size: calc(100%/4) 50%;
+  background-repeat: repeat-x;
+  animation: l11 1s infinite;
+}
+@keyframes l11 {
+    80%,100% {background-position: calc(100%/3) 0,calc(100%/-3) 100%}
+}
+
+/* HTML: <div class="loader"></div> */
+.loader-clones {
+  width: 28px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #E3AAD6;
+  transform-origin: top;
+  display: grid;
+  animation: l3-0 1s infinite linear;
+}
+.loader-clones::before,
+.loader-clones::after {
+  content: "";
+  grid-area: 1/1;
+  background:#F4DD51;
+  border-radius: 50%;
+  transform-origin: top;
+  animation: inherit;
+  animation-name: l3-1;
+}
+.loader-clones::after {
+  background: #F10C49;
+  --s:180deg;
+}
+@keyframes l3-0 {
+  0%,20% {transform: rotate(0)}
+  100%   {transform: rotate(360deg)}
+}
+@keyframes l3-1 {
+  50% {transform: rotate(var(--s,90deg))}
+  100% {transform: rotate(0)}
 }
 
 @layer base {

@@ -12,6 +12,7 @@ import {
 // src/apps/genres/components/AlertGenre.jsx
 export const AlertComponents = ({
   title,
+  icon,
   desc,
   openAlert,
   setOpenAlert,
@@ -31,6 +32,7 @@ export const AlertComponents = ({
     <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
       <AlertDialogContent>
         <AlertDialogHeader>
+          <div className={!icon ? "hidden" : "flex justify-center mt-5 mb-3"}>{icon}</div>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{desc}</AlertDialogDescription>
         </AlertDialogHeader>
