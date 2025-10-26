@@ -1,8 +1,9 @@
-import { getAll } from "@/services/api.genre";
+import { getAll, getAllGenre } from "@/services/api.genre";
 import { useEffect, useState } from "react";
 
 export const useGenres = () => {
   const [genre, setGenre] = useState([]);
+  const [genreAll, setGenreAll] = useState([])
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -16,12 +17,22 @@ export const useGenres = () => {
       setGenre(res.result.data);
       setPagination(res.result.pagination);
     } catch (error) {
-      console.log("Error", error);
+      throw error
     }
   };
 
+  const fetchGenreAll = async () => {
+    try {
+      const res = await getAllGenre()
+      setGenreAll(res.result)
+    } catch (error) {
+      throw error;
+    }
+  }
+
   useEffect(() => {
     fetchGenre();
+    fetchGenreAll();
   }, []);
 
   return {
@@ -30,5 +41,6 @@ export const useGenres = () => {
     pagination,
     setPagination,
     fetchGenre,
+    genreAll
   };
 };

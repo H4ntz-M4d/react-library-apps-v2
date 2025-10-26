@@ -1,27 +1,22 @@
-const baseApi = "http://localhost:2500/api";
+import { apiFetch } from "./api.client";
 
 export const getAll = async (page = 1, limit = 10) => {
-    const res = await fetch(`${baseApi}/books?page=${page}&limit=${limit}`)
-    return res.json()
+    const res = await apiFetch(`/api/books?page=${page}&limit=${limit}`)
+    return res
 }
 
 export const getById = async (id_buku) => {
-    const res = await fetch(`${baseApi}/books/${id_buku}`)
-    return res.json()
+    const res = await apiFetch(`/api/books/${id_buku}`)
+    return res
 }
 
 export const create = async (data) => {
-    const res = await fetch(`${baseApi}/books`, {
+    const result = await apiFetch(`/api/books`, {
         method: "POST",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify(data)
     })
 
-    const result = await res.json()
-
-    if (!res.ok || !result.success) {
+    if (!result.success) {
         let errorMessage = "Request Failed"
 
         if (result.message) {
@@ -42,17 +37,12 @@ export const create = async (data) => {
 }
 
 export const update = async (id_buku, data) => {
-    const res = await fetch(`${baseApi}/books/${id_buku}`, {
+    const result = await apiFetch(`/api/books/${id_buku}`, {
         method: "PUT",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify(data)
     })
 
-    const result = await res.json()
-
-    if (!res.ok || !result.success) {
+    if (!result.success) {
         let errorMessage = "Response Failed"
 
         if (result.message) {
@@ -73,16 +63,11 @@ export const update = async (id_buku, data) => {
 }
 
 export const remove = async (id_buku) => {
-    const res = await fetch(`${baseApi}/books/${id_buku}`, {
+    const result = await apiFetch(`/api/books/${id_buku}`, {
         method: "DELETE",
-        headers: {
-            "Content-type": "application/json"
-        }
     })
 
-    const result = await res.json()
-
-    if (!res.ok || !result.success) {
+    if (!result.success) {
         let errorMessage = "Response Failed"
 
         if (result.message) {
@@ -103,17 +88,12 @@ export const remove = async (id_buku) => {
 }
 
 export const removeSelected = async (data) => {
-    const res = await fetch(`${baseApi}/books`, {
+    const result = await apiFetch(`/api/books`, {
         method: "DELETE",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify({ id_bukuSelected: data })
     })
 
-    const result = await res.json()
-
-    if (!res.ok || !result.success) {
+    if (!result.success) {
         let errorMessage = "Response Failed"
 
         if (result.message) {

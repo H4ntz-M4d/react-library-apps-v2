@@ -27,7 +27,7 @@ import { Confirmation } from "../../../helpers/confirmation";
 import { genreHelpers } from "../helpers/genreHelpers";
 
 export const CreateUpdateContent = () => {
-  const { genre } = useGenres();
+  const { genreAll } = useGenres();
   const { add, edit, loading, formData, setFormData, isEdit, loadBookById, error } =
     useMutationBook();
   const [openAlert, setOpenAlert] = useState(false);
@@ -99,6 +99,8 @@ export const CreateUpdateContent = () => {
       },
     });
   };
+  
+  console.log(genreAll);
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -170,7 +172,7 @@ export const CreateUpdateContent = () => {
                   value={formData?.tahun_terbit || ""}
                 />
               </div>
-              {genre?.length > 0 &&
+              {genreAll?.length > 0 &&
                 formData.id_genre.map((selected, index) => (
                   <div
                     key={index}
@@ -191,7 +193,7 @@ export const CreateUpdateContent = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Genre</SelectLabel>
-                            {genre?.map((value) => (
+                            {genreAll?.map((value) => (
                               <SelectItem
                                 key={value.id_genre}
                                 value={String(value.id_genre)} // jadikan string

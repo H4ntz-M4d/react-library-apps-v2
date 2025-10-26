@@ -3,6 +3,7 @@ export const Confirmation = ({setAlertConfig, setOpenAlert}) => {
     // default
     const defaults = {
       title: "Konfirmasi",
+      icon: null,
       desc: "Apakah Anda yakin?",
       actionLabel: "Lanjut",
       cancelLabel: "Batal",
@@ -16,6 +17,8 @@ export const Confirmation = ({setAlertConfig, setOpenAlert}) => {
   const openError = (message) => {
     setAlertConfig({
       title: "Terjadi kesalahan",
+      icon: null,
+      iconStyle: null,
       desc: message ?? "Gagal memproses permintaan.",
       actionLabel: "OK",
       cancelLabel: null, // tidak tampilkan tombol cancel

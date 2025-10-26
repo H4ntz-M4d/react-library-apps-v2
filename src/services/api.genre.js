@@ -1,26 +1,31 @@
-const baseApi = "http://localhost:2500";
+import { apiFetch } from "./api.client";
 
 export const getAll = async (page = 1, limit = 10) => {
-  const res = await fetch(`${baseApi}/api/genres?page=${page}&limit=${limit}`);
-  return res.json();
+  const response = await apiFetch(`/api/genres?page=${page}&limit=${limit}`,{
+    method: "GET",
+  });
+  return response;
+};
+
+export const getAllGenre = async (page = 1, limit = 10) => {
+  const response = await apiFetch(`/api/genres/all`,{
+    method: "GET",
+  });
+  return response;
 };
 
 export const getById = async (id_genre) => {
-    const res = await fetch(`${baseApi}/api/genres/${id_genre}`)
-    return res.json()
+    const res = await apiFetch(`/api/genres/${id_genre}`)
+    return res
 }
 
 export const create = async (data) => {
-    const res = await fetch(`${baseApi}/api/genres`, {
+    const res = await apiFetch(`/api/genres`, {
         method: "POST",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify(data)
     })
-
-    const result = await res.json();
-    if (!res.ok || !result.success) {
+    const result = res;
+    if (!result?.success) {
         let errorMessage = "Request Failed";
         
         if (result.message) {
@@ -41,16 +46,12 @@ export const create = async (data) => {
 }
 
 export const update = async (id_genre, data) => {
-    const res = await fetch(`${baseApi}/api/genres/${id_genre}`, {
+    const res = await apiFetch(`/api/genres/${id_genre}`, {
         method: "PUT",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify(data)
     })
-
-    const result = await res.json();
-    if (!res.ok || !result.success) {
+    const result = res;
+    if (!result?.success) {
         let errorMessage = "Request Failed";
         
         if (result.message) {
@@ -71,16 +72,14 @@ export const update = async (id_genre, data) => {
 }
 
 export const remove = async (id_genre) => {
-    const res = await fetch(`${baseApi}/api/genres/${id_genre}`, {
+    const res = await apiFetch(`/api/genres/${id_genre}`, {
         method: "DELETE",
         headers: {
             "Content-type": "application/json"
         }
     })
-
-
-    const result = await res.json();
-    if (!res.ok || !result.success) {
+    const result = res;
+    if (!result?.success) {
         let errorMessage = "Request Failed";
         
         if (result.message) {
@@ -101,17 +100,12 @@ export const remove = async (id_genre) => {
 }
 
 export const removeSelected = async (id_genre_Selected) => {
-    const res = await fetch(`${baseApi}/api/genres`, {
+    const res = await apiFetch(`/api/genres`, {
         method: "DELETE",
-        headers: {
-            "Content-type": "application/json"
-        },
         body: JSON.stringify({id_genre_Selected: id_genre_Selected})
     })
-
-
-    const result = await res.json();
-    if (!res.ok || !result.success) {
+    const result = res;
+    if (!result?.success) {
         let errorMessage = "Request Failed";
         
         if (result.message) {
