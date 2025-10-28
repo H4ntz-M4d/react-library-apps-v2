@@ -1,5 +1,5 @@
 import { BookProvider } from "../context/BooksContext"
-import { CreateUpdateContent } from "../views/CreateUpdateContent"
+import { CreateUpdateContent } from "../content/CreateUpdateContent"
 
 export const BookCreateUpdate = () => {
     return (

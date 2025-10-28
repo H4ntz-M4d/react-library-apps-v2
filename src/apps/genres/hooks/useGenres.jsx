@@ -32,7 +32,6 @@ export const useGenres = () => {
 
   useEffect(() => {
     fetchGenre();
-    fetchGenreAll();
   }, []);
 
   return {
@@ -41,6 +40,7 @@ export const useGenres = () => {
     pagination,
     setPagination,
     fetchGenre,
-    genreAll
+    genreAll,
+    fetchGenreAll
   };
 };

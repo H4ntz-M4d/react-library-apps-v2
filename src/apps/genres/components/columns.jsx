@@ -1,6 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../../../components/ui/button";
 import { DialogForm } from "./DialogForm";
+import { ArrowUpDown } from "lucide-react";
 
 export const genreColumns = ({
   page = 1,
@@ -42,7 +43,18 @@ export const genreColumns = ({
   },
   {
     accessorKey: "kd_genre",
-    header: "Kode Genre",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Kode Genre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+
   },
   {
     accessorKey: "name_genre",

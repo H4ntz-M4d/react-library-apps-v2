@@ -27,7 +27,7 @@ import { Confirmation } from "../../../helpers/confirmation";
 import { genreHelpers } from "../helpers/genreHelpers";
 
 export const CreateUpdateContent = () => {
-  const { genreAll } = useGenres();
+  const { genreAll, fetchGenreAll } = useGenres();
   const { add, edit, loading, formData, setFormData, isEdit, loadBookById, error } =
     useMutationBook();
   const [openAlert, setOpenAlert] = useState(false);
@@ -43,6 +43,7 @@ export const CreateUpdateContent = () => {
     if (editId) {
       loadBookById(editId);
     }
+    fetchGenreAll()
   }, []); // hanya jalan sekali saat mount
 
   const handleChange = (e) => {
@@ -99,8 +100,6 @@ export const CreateUpdateContent = () => {
       },
     });
   };
-  
-  console.log(genreAll);
 
   const submitForm = async (e) => {
     e.preventDefault();

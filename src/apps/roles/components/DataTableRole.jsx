@@ -2,9 +2,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -15,43 +14,36 @@ import {
   TableHeader,
   TableRow,
 } from "../../../components/ui/table";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/pagination";
 import { getPageWindow } from "@/helpers/getPageWindow";
+import { Button } from "@/components/ui/button";
 
-export function DataTable({
+export const DataTableRole = ({
   columns,
   data,
-  setOpen,
-  onEdit,
   pageIndex,
-  pageSize,
   pageCount,
+  pageSize,
   onPaginationChange,
-  onRequestDeleteSelected,
-}) {
+  onDeleteSelected,
+  setOpen
+}) => {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
-  const [sorting, setSorting] = useState([])
-
   const pages = getPageWindow(pageIndex, pageCount, 5);
-
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+    manualPagination: true,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
     pageCount,
     state: {
-      sorting,
       rowSelection,
       columnFilters,
       pagination: {
@@ -62,37 +54,34 @@ export function DataTable({
     onPaginationChange,
   });
 
-  const selected_genre_id = table
+  const selectedIds = table
     .getSelectedRowModel()
-    .rows.map((row) => row.original.id_genre);
+    .rows.map((row) => row.original.id_role);
 
   return (
     <div>
       <div className="overflow-hidden rounded-md border md:text-end p-5">
         <div className="md:flex justify-between items-center py-4">
           <Input
-            placeholder="Filter nama genre..."
-            value={table.getColumn("name_genre")?.getFilterValue() ?? ""}
+            placeholder="Filter nama Role..."
+            value={table.getColumn("nama_role")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("name_genre")?.setFilterValue(event.target.value)
+              table.getColumn("nama_role")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
-          <div className="flex gap-3">
-            <Button
-              className={"my-3"}
-              variant={"primary"}
-              click={() => {
-                setOpen(true), onEdit(false);
-              }}
-            >
-              Add Genre
+
+          <div className="flex gap-2">
+            <Button size="sm" type="button" click={() => setOpen(true)} variant="primary">
+              Create Role
             </Button>
-            {selected_genre_id.length > 0 && (
+
+            {selectedIds.length > 0 && (
               <Button
-                className={"my-3"}
-                variant={"destructive"}
-                click={() => onRequestDeleteSelected(selected_genre_id)}
+                size="sm"
+                type="button"
+                variant="destructive"
+                click={() => onDeleteSelected(selectedIds)}
               >
                 Delete Selected
               </Button>
@@ -120,29 +109,31 @@ export function DataTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className={"text-center"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow
+                    key={row.id}
+                    className={"text-center"}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No Results
                 </TableCell>
               </TableRow>
             )}
@@ -152,4 +143,4 @@ export function DataTable({
       <DataTablePagination table={table} pages={pages} />
     </div>
   );
-}
+};

@@ -9,6 +9,7 @@ import { AuthPage } from "./apps/auth/pages/AuthPage";
 import { ProtectedRoute } from "./apps/auth/components/ProtectedRoute";
 import { AuthProvider } from "./apps/auth/context/AuthContext";
 import { StrictMode } from "react";
+import { RolePage } from "./apps/roles/pages/RolePage";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -17,6 +18,14 @@ createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="/login" element={<AuthPage />} />
           <Route path="/" element={<App />}>
+            <Route
+              path="/list-role"
+              element={
+                <ProtectedRoute>
+                  <RolePage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/genre"
               element={
