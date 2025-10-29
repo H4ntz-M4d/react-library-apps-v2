@@ -13,8 +13,11 @@ export const useBooks = () => {
   const fetchBook = async (page = 1, limit = pagination.limit) => {
     try {
       const res = await getAll(page, limit);
-      setBooks(res.result.data);
-      setPagination(res.result.pagination);
+      if (res?.success) {
+        setBooks(res.result.data);
+        setPagination(res.result.pagination);
+      }
+      return res
     } catch (error) {
       throw error;
     }

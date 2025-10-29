@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/pagination";
 import { getPageWindow } from "@/helpers/getPageWindow";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export const DataTableBook = ({
   columns,
@@ -71,11 +72,11 @@ export const DataTableBook = ({
           />
 
           <div className="flex gap-2">
-            <a href="/books/create-book">
+            <Link to="/books/create-book">
               <Button size="sm" type="button" variant="primary">
                 Create Book
               </Button>
-            </a>
+            </Link>
 
             {selectedIds.length > 0 && (
               <Button

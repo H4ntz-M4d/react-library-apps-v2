@@ -33,27 +33,6 @@ export const RoleColumns = ({ onRemoved, setEdit, setOpen, setFormData }) => [
     accessorKey: "nama_role",
     header: "Nama Role",
   },
-  //   {
-  //     accessorKey: "buku_genre",
-  //     header: "Genre",
-  //     cell: ({ row }) => {
-  //       const genres = row.original.buku_genre;
-  //       if (!genres || !Array.isArray(genres)) return "-";
-
-  //       return (
-  //         <div className="flex flex-wrap gap-1">
-  //           {genres.map((item, index) => (
-  //             <span
-  //               key={index}
-  //               className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
-  //             >
-  //               {item.genre?.name_genre || "-"}
-  //             </span>
-  //           ))}
-  //         </div>
-  //       );
-  //     },
-  //   },
   {
     id: "actions",
     header: "Actions",

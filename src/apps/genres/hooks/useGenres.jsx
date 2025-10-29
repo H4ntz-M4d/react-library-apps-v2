@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export const useGenres = () => {
   const [genre, setGenre] = useState([]);
-  const [genreAll, setGenreAll] = useState([])
+  const [genreAll, setGenreAll] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -14,21 +14,27 @@ export const useGenres = () => {
   const fetchGenre = async (page = 1, limit = pagination.limit) => {
     try {
       const res = await getAll(page, limit);
-      setGenre(res.result.data);
-      setPagination(res.result.pagination);
+      if (res?.success) {
+        setGenre(res.result.data);
+        setPagination(res.result.pagination);
+      }
+      return res
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 
   const fetchGenreAll = async () => {
     try {
-      const res = await getAllGenre()
-      setGenreAll(res.result)
+      const res = await getAllGenre();
+      if (res.success) {
+        setGenreAll(res.result);
+      }
+      return res
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   useEffect(() => {
     fetchGenre();
@@ -41,6 +47,6 @@ export const useGenres = () => {
     setPagination,
     fetchGenre,
     genreAll,
-    fetchGenreAll
+    fetchGenreAll,
   };
 };

@@ -1,5 +1,5 @@
 import { apiFetch } from "@/services/api.client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export const useAuthCheck = () => {
   const [check, setCheck] = useState();
@@ -7,7 +7,7 @@ export const useAuthCheck = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const didMountRef = useRef(false)
 
-  const authCheck = async () => {
+  const authCheck = useCallback(async () => {
     try {
       setIsCheckingAuth(true)
       const response = await apiFetch("/auth/me", {
@@ -28,7 +28,7 @@ export const useAuthCheck = () => {
     } finally {
       setIsCheckingAuth(false)
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -36,7 +36,7 @@ export const useAuthCheck = () => {
     }
     didMountRef.current = true;
     authCheck(); // hanya dijalankan sekali di mount
-  }, []);
+  }, [authCheck]);
 
   return { check, authCheck, isAuth, isCheckingAuth };
 };

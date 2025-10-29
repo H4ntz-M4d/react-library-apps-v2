@@ -10,6 +10,7 @@ import { ProtectedRoute } from "./apps/auth/components/ProtectedRoute";
 import { AuthProvider } from "./apps/auth/context/AuthContext";
 import { StrictMode } from "react";
 import { RolePage } from "./apps/roles/pages/RolePage";
+import { UsersPage } from "./apps/users/pages/UsersPage";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -23,6 +24,22 @@ createRoot(document.getElementById("root")).render(
               element={
                 <ProtectedRoute>
                   <RolePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/list-karyawan"
+              element={
+                <ProtectedRoute>
+                  <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/list-anggota"
+              element={
+                <ProtectedRoute>
+                  <UsersPage />
                 </ProtectedRoute>
               }
             />

@@ -29,6 +29,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import { Link } from "react-router";
 
 // Menu items.
 const items = [
@@ -69,10 +70,10 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="#">
+                  <Link to="#">
                     <LayoutDashboard />
                     <span>Dashboard</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenu>
@@ -91,22 +92,22 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                           <SidebarMenuButton asChild className={"cursor-pointer"}>
-                            <a href="/list-role">
+                            <Link to="/list-role">
                               <IdCard />
                               <span>Role</span>
-                            </a>
+                            </Link>
                           </SidebarMenuButton>
                           <SidebarMenuButton asChild className={"cursor-pointer"}>
-                            <div>
+                            <Link to="list-karyawan">
                               <ShieldUser />
                               <span>Karyawan</span>
-                            </div>
+                            </Link>
                           </SidebarMenuButton>
                           <SidebarMenuButton asChild className={"cursor-pointer"}>
-                            <div>
+                            <Link to="list-anggota">
                               <UserCheck />
                               <span>Anggota</span>
-                            </div>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </SidebarMenuSub>
@@ -118,10 +119,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

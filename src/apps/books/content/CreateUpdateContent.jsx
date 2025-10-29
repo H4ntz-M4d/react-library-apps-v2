@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { AlertComponents } from "@/components/global/AlertComponents";
 import { Confirmation } from "../../../helpers/confirmation";
 import { genreHelpers } from "../helpers/genreHelpers";
+import { Link } from "react-router";
 
 export const CreateUpdateContent = () => {
   const { genreAll, fetchGenreAll } = useGenres();
@@ -229,11 +230,11 @@ export const CreateUpdateContent = () => {
               </Button>
             </div>
             <div className="flex flex-wrap gap-4">
-              <a href="/books">
+              <Link to="/books">
                 <Button type={"button"} variant={"destructive"}>
                   Back
                 </Button>
-              </a>
+              </Link>
               <Button type={"submit"} variant={"primary"}>
                 Submit
               </Button>
